@@ -14,7 +14,7 @@ const FLEET: Omit<
     localPath: '/Users/andrew/Deeper',
     launch: { method: 'url', url: 'https://westkitty.github.io/Deeper/' },
     platforms: ['web'],
-    tags: ['pages', 'fleet', 'playable'],
+    tags: ['pages', 'fleet', 'playable', 'legacy-pages'],
     lastActivity: '2026-09-14T14:30:00.000Z',
     repo: { url: 'https://github.com/westkitty/Deeper' },
   },
@@ -26,7 +26,7 @@ const FLEET: Omit<
     status: 'PLAYABLE',
     launch: { method: 'url', url: 'https://westkitty.github.io/Starsilk_PWA_Mapper/' },
     platforms: ['web'],
-    tags: ['pages', 'fleet', 'pwa'],
+    tags: ['pages', 'fleet', 'pwa', 'legacy-pages'],
     lastActivity: '2026-09-14T14:30:00.000Z',
     repo: { url: 'https://github.com/westkitty/Starsilk_PWA_Mapper' },
   },
@@ -64,7 +64,7 @@ const FLEET: Omit<
     status: 'PLAYABLE',
     launch: { method: 'url', url: 'https://westkitty.github.io/c_chase/' },
     platforms: ['web'],
-    tags: ['pages', 'fleet', 'playable'],
+    tags: ['pages', 'fleet', 'playable', 'legacy-pages'],
     repo: { url: 'https://github.com/westkitty/c_chase' },
   },
   {
@@ -75,7 +75,7 @@ const FLEET: Omit<
     status: 'PLAYABLE',
     launch: { method: 'url', url: 'https://westkitty.github.io/flitdice/' },
     platforms: ['web'],
-    tags: ['pages', 'fleet', 'playable'],
+    tags: ['pages', 'fleet', 'playable', 'legacy-pages'],
     repo: { url: 'https://github.com/westkitty/flitdice' },
   },
   {
@@ -86,7 +86,7 @@ const FLEET: Omit<
     status: 'PLAYABLE',
     launch: { method: 'url', url: 'https://westkitty.github.io/Flit_Doll/' },
     platforms: ['web'],
-    tags: ['pages', 'fleet', 'playable'],
+    tags: ['pages', 'fleet', 'playable', 'legacy-pages'],
     repo: { url: 'https://github.com/westkitty/Flit_Doll' },
   },
   {
@@ -97,7 +97,7 @@ const FLEET: Omit<
     status: 'PLAYABLE',
     launch: { method: 'url', url: 'https://westkitty.github.io/Flit_Substitute_Doll/' },
     platforms: ['web'],
-    tags: ['pages', 'fleet', 'playable'],
+    tags: ['pages', 'fleet', 'playable', 'legacy-pages'],
     repo: { url: 'https://github.com/westkitty/Flit_Substitute_Doll' },
   },
   {
@@ -108,7 +108,7 @@ const FLEET: Omit<
     status: 'PLAYABLE',
     launch: { method: 'url', url: 'https://westkitty.github.io/Flit_Substitute_Fey/' },
     platforms: ['web'],
-    tags: ['pages', 'fleet', 'playable'],
+    tags: ['pages', 'fleet', 'playable', 'legacy-pages'],
     repo: { url: 'https://github.com/westkitty/Flit_Substitute_Fey' },
   },
   {
@@ -119,7 +119,7 @@ const FLEET: Omit<
     status: 'TOOL',
     launch: { method: 'url', url: 'https://westkitty.github.io/DnDex/' },
     platforms: ['web'],
-    tags: ['pages', 'fleet', 'tool'],
+    tags: ['pages', 'fleet', 'tool', 'legacy-pages'],
     repo: { url: 'https://github.com/westkitty/DnDex' },
   },
   {
@@ -130,7 +130,7 @@ const FLEET: Omit<
     status: 'PLAYABLE',
     launch: { method: 'url', url: 'https://westkitty.github.io/The_Full_Weasel/' },
     platforms: ['web'],
-    tags: ['pages', 'fleet', 'playable'],
+    tags: ['pages', 'fleet', 'playable', 'legacy-pages'],
     repo: { url: 'https://github.com/westkitty/The_Full_Weasel' },
   },
 ]

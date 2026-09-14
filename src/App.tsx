@@ -436,7 +436,7 @@ export default function App() {
         onDone={() =>
           patchPersist((s) => ({
             ...s,
-            uiPrefs: { ...s.uiPrefs, firstRunDone: true, demoMode: false },
+            uiPrefs: { ...s.uiPrefs, firstRunDone: true },
           }))
         }
       />

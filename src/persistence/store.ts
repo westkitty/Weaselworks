@@ -5,7 +5,7 @@ export const STORAGE_KEY = 'weaselworks.persistence.v1'
 
 const defaultUiPrefs: UiPrefs = {
   viewMode: 'grid',
-  demoMode: true,
+  demoMode: false,
   selectedId: null,
   firstRunDone: false,
 }
