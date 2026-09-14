@@ -8,12 +8,13 @@ interface Props {
   onClose: () => void
   onToggleFavorite: (id: string) => void
   onMarkOpened: (id: string) => void
+  playCount?: number
 }
 
-export function CartridgeDetail({ cartridge, onClose, onToggleFavorite, onMarkOpened }: Props) {
+export function CartridgeDetail({ cartridge, onClose, onToggleFavorite, onMarkOpened, playCount = 0 }: Props) {
   if (!cartridge) {
     return (
-      <aside className="detail-panel" aria-label="Cartridge detail">
+      <aside className="detail-panel detail-sheet" aria-label="Cartridge detail">
         <div className="empty-state">
           <img src="/dexter/stinkweasel-dexter.png" alt="Stinkweasel Dexter" />
           <p>Select a cartridge to inspect launch options, Git status, and project details.</p>
@@ -57,6 +58,8 @@ export function CartridgeDetail({ cartridge, onClose, onToggleFavorite, onMarkOp
         <dd>{cartridge.lastActivity ?? '—'}</dd>
         <dt>Source</dt>
         <dd>{cartridge.source}</dd>
+        <dt>Plays</dt>
+        <dd>{playCount}</dd>
         {cartridge.repo?.url ? (
           <>
             <dt>Repo</dt>
@@ -66,14 +69,14 @@ export function CartridgeDetail({ cartridge, onClose, onToggleFavorite, onMarkOp
       </dl>
 
       {cartridge.missing ? (
-        <div className="issue-box" role="status">
+        <div className="issue-box issue-missing" role="status">
           <strong>Missing project</strong>
           <pre>Local path not found: {cartridge.localPath}</pre>
         </div>
       ) : null}
 
       {cartridge.manifestIssues && cartridge.manifestIssues.length > 0 ? (
-        <div className="issue-box" role="alert">
+        <div className="issue-box issue-broken" role="alert">
           <strong>Broken / invalid manifest</strong>
           <pre>{cartridge.manifestIssues.join('\n')}</pre>
         </div>
@@ -133,6 +136,21 @@ export function CartridgeDetail({ cartridge, onClose, onToggleFavorite, onMarkOp
               >
                 Copy instructions
               </button>
+              {a.kind === 'open-url' && a.url ? (
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={async () => {
+                    try {
+                      await navigator.clipboard.writeText(a.url!)
+                    } catch {
+                      /* clipboard may be denied */
+                    }
+                  }}
+                >
+                  Copy Pages URL
+                </button>
+              ) : null}
             </div>
             <pre>{a.instruction}</pre>
           </div>

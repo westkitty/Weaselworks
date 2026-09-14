@@ -19,15 +19,27 @@ export function CartridgeCard({
   gridIndex,
 }: Props) {
   const initial = cartridge.title.trim().charAt(0).toUpperCase() || '?'
+  const stateClass = [
+    'cart-card',
+    'cart-plastic',
+    selected ? 'is-selected' : '',
+    cartridge.favorite ? 'is-favorite' : '',
+    cartridge.missing ? 'is-missing' : '',
+    cartridge.status === 'BROKEN' || (cartridge.manifestIssues?.length ?? 0) > 0 ? 'is-broken' : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
+
   return (
     <li>
       <div
         role="option"
         aria-selected={selected}
         aria-label={`${cartridge.title}, ${cartridge.status}`}
-        className="cart-card"
+        className={stateClass}
         tabIndex={tabIndex}
         data-grid-index={gridIndex}
+        data-status={cartridge.status}
         onClick={onSelect}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
@@ -36,6 +48,7 @@ export function CartridgeCard({
           }
         }}
       >
+        <span className={`cart-led status-${cartridge.status}`} aria-hidden="true" />
         <button
           type="button"
           className="fav-star"
@@ -48,7 +61,7 @@ export function CartridgeCard({
         >
           {cartridge.favorite ? '★' : '☆'}
         </button>
-        <div className="cart-art" aria-hidden="true">
+        <div className="cart-art box-art" aria-hidden="true">
           {cartridge.artwork ? (
             <img src={cartridge.artwork} alt="" />
           ) : (
@@ -58,7 +71,7 @@ export function CartridgeCard({
         <h3 className="cart-title">{cartridge.title}</h3>
         <div className="cart-meta">
           <StatusBadge status={cartridge.status} />
-          {cartridge.missing ? <span>missing</span> : null}
+          {cartridge.missing ? <span className="tag-warn">missing</span> : null}
         </div>
       </div>
     </li>

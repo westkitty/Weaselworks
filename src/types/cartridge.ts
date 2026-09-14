@@ -131,4 +131,6 @@ export interface PersistenceState {
   uiPrefs: UiPrefs
   /** Optional pasted git inspect JSON keyed by path */
   gitSnapshots: Record<string, GitMetadata>
+  /** Open/play counts keyed by cartridge id */
+  playCounts: Record<string, number>
 }

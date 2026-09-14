@@ -20,6 +20,8 @@ import { CartridgeGrid } from './ui/CartridgeGrid'
 import { CartridgeListView } from './ui/CartridgeList'
 import { DiscoverySettingsModal } from './ui/DiscoverySettings'
 import { FilterBar } from './ui/FilterBar'
+import { RecentRail } from './ui/RecentRail'
+import { HelpOverlay } from './ui/HelpOverlay'
 import { ManualRegisterModal } from './ui/ManualRegister'
 
 const DEXTER = '/dexter/stinkweasel-dexter.png'
@@ -31,10 +33,23 @@ export default function App() {
   const [registerOpen, setRegisterOpen] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [discoveryScan, setDiscoveryScan] = useState<ManifestCandidate[]>([])
+  const [helpOpen, setHelpOpen] = useState(false)
 
   useEffect(() => {
     savePersistence(persist)
   }, [persist])
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === '?' && !(e.target instanceof HTMLInputElement) && !(e.target instanceof HTMLTextAreaElement)) {
+        e.preventDefault()
+        setHelpOpen((v) => !v)
+      }
+      if (e.key === 'Escape') setHelpOpen(false)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
 
   // Configured-directory discovery (browser: no FS — empty until helper / future FSA).
   // Still wires the discovery module so dirs are stored and scanned when a lister exists.
@@ -110,6 +125,13 @@ export default function App() {
 
   const visible = useMemo(() => filterCartridges(withGit, filters), [withGit, filters])
   const allTags = useMemo(() => collectTags(withGit), [withGit])
+  const recentItems = useMemo(() => {
+    const byId = new Map(withGit.map((c) => [c.id, c]))
+    return persist.recentlyOpened
+      .map((r) => byId.get(r.id))
+      .filter((c): c is (typeof withGit)[number] => !!c)
+      .slice(0, 12)
+  }, [withGit, persist.recentlyOpened])
   const selected =
     withGit.find((c) => c.id === persist.uiPrefs.selectedId) ??
     visible[0] ??
@@ -188,12 +210,16 @@ export default function App() {
           <button type="button" className="btn" onClick={() => setSettingsOpen(true)}>
             Discovery
           </button>
+          <button type="button" className="btn" onClick={() => setHelpOpen(true)} aria-label="Keyboard help">
+            ?
+          </button>
         </div>
       </header>
 
       <FilterBar filters={filters} allTags={allTags} onChange={setFilters} />
+      <RecentRail items={recentItems} onSelect={selectId} />
 
-      <div className={`main-stage ${selected ? 'has-detail' : ''}`}>
+      <div className={`tv-bezel main-stage ${selected ? 'has-detail' : ''}`}>
         <section className="library-panel" aria-label="Cartridge library">
           <p className="hint" style={{ marginTop: 0 }}>
             Showing {visible.length}
@@ -239,6 +265,7 @@ export default function App() {
 
         <CartridgeDetail
           cartridge={selected}
+          playCount={selected ? (persist.playCounts?.[selected.id] ?? 0) : 0}
           onClose={() =>
             patchPersist((s) => ({
               ...s,
@@ -282,6 +309,7 @@ export default function App() {
           }))
         }}
       />
+      <HelpOverlay open={helpOpen} onClose={() => setHelpOpen(false)} />
     </div>
   )
 }

@@ -18,6 +18,7 @@ export function defaultPersistenceState(): PersistenceState {
     recentlyOpened: [],
     uiPrefs: { ...defaultUiPrefs },
     gitSnapshots: {},
+    playCounts: {},
   }
 }
 
@@ -47,6 +48,8 @@ export function loadPersistence(rawStorage?: Storage | null): PersistenceState {
         parsed.gitSnapshots && typeof parsed.gitSnapshots === 'object'
           ? parsed.gitSnapshots
           : {},
+      playCounts:
+        parsed.playCounts && typeof parsed.playCounts === 'object' ? parsed.playCounts : {},
     }
   } catch {
     return defaultPersistenceState()
@@ -76,9 +79,11 @@ export function toggleFavorite(state: PersistenceState, id: string): Persistence
 
 export function recordOpened(state: PersistenceState, id: string, at = new Date().toISOString()): PersistenceState {
   const rest = state.recentlyOpened.filter((r) => r.id !== id)
+  const playCounts = { ...(state.playCounts ?? {}), [id]: ((state.playCounts ?? {})[id] ?? 0) + 1 }
   return {
     ...state,
     recentlyOpened: [{ id, openedAt: at }, ...rest].slice(0, 30),
+    playCounts,
   }
 }
 

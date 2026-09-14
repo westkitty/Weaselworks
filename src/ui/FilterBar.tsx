@@ -65,6 +65,19 @@ export function FilterBar({ filters, allTags, onChange }: Props) {
           </button>
         ))}
       </div>
+      <div className="chip-row" role="group" aria-label="Quick tags">
+        {['pages', 'factory', 'fleet', 'playable'].map((t) => (
+          <button
+            key={t}
+            type="button"
+            className="chip"
+            aria-pressed={filters.tags.includes(t)}
+            onClick={() => toggleTag(t)}
+          >
+            #{t}
+          </button>
+        ))}
+      </div>
       {allTags.length > 0 ? (
         <div className="chip-row" role="group" aria-label="Tag filters">
           {allTags.slice(0, 24).map((t) => (
