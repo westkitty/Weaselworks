@@ -7,12 +7,13 @@ const defaultUiPrefs: UiPrefs = {
   viewMode: 'grid',
   demoMode: true,
   selectedId: null,
+  firstRunDone: false,
 }
 
 export function defaultPersistenceState(): PersistenceState {
   return {
     schemaVersion: PERSISTENCE_SCHEMA_VERSION,
-    discoveryDirs: ['/Users/andrew/2d_game_factory/2d_Game_Factory/games', '/Users/andrew/2d_game_factory/2d_Game_Factory/demos', '/Users/andrew/Deeper'],
+    discoveryDirs: ['/Users/andrew/2d_game_factory/2d_Game_Factory/games', '/Users/andrew/2d_game_factory/2d_Game_Factory/demos', '/Users/andrew/2d_game_factory/2d_Game_Factory/proofs', '/Users/andrew/Deeper', '/Users/andrew/Immortals', '/Users/andrew/heliocide_viewer', '/Users/andrew/modern_2d_browser_game_toolkit'],
     manualRegistrations: [],
     favorites: [],
     recentlyOpened: [],

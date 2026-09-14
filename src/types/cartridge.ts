@@ -51,6 +51,8 @@ export interface Cartridge {
   title: string
   description: string
   artwork?: string
+  /** Optional screenshot/GIF URLs (schema v2-ish) */
+  gallery?: string[]
   projectType: ProjectType
   status: CartridgeStatus
   localPath?: string
@@ -76,6 +78,8 @@ export interface ManifestDocument {
   title: string
   description?: string
   artwork?: string
+  /** Optional screenshot/GIF URLs (schema v2-ish) */
+  gallery?: string[]
   projectType?: string
   status?: string
   launch?: {
@@ -103,6 +107,8 @@ export interface ManualRegistration {
   title: string
   description: string
   artwork?: string
+  /** Optional screenshot/GIF URLs (schema v2-ish) */
+  gallery?: string[]
   projectType: ProjectType
   status: CartridgeStatus
   localPath?: string
@@ -117,6 +123,11 @@ export interface ManualRegistration {
 export type ViewMode = 'grid' | 'list'
 
 export interface UiPrefs {
+  /** Dexter onboarding dismissed */
+  firstRunDone?: boolean
+  /** Optional schema v2-ish accent */
+  accentColor?: string
+
   viewMode: ViewMode
   demoMode: boolean
   selectedId: string | null

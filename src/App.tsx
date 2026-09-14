@@ -24,6 +24,10 @@ import { DiscoverySettingsModal } from './ui/DiscoverySettings'
 import { FilterBar } from './ui/FilterBar'
 import { RecentRail } from './ui/RecentRail'
 import { HelpOverlay } from './ui/HelpOverlay'
+import { CommandPalette } from './ui/CommandPalette'
+import { Onboarding } from './ui/Onboarding'
+import { Toast } from './ui/Toast'
+import { resolveLaunchActions, executeSafeLaunch } from './launch/providers'
 import { CollectionsPanel } from './ui/CollectionsPanel'
 import { ManualRegisterModal } from './ui/ManualRegister'
 
@@ -38,6 +42,9 @@ export default function App() {
   const [discoveryScan, setDiscoveryScan] = useState<ManifestCandidate[]>([])
   const [helpOpen, setHelpOpen] = useState(false)
   const [collectionTag, setCollectionTag] = useState<string | null>(null)
+  const [paletteOpen, setPaletteOpen] = useState(false)
+  const [toast, setToast] = useState<string | null>(null)
+  const [selectedIds, setSelectedIds] = useState<string[]>([])
 
   useEffect(() => {
     savePersistence(persist)
@@ -49,11 +56,24 @@ export default function App() {
         e.preventDefault()
         setHelpOpen((v) => !v)
       }
-      if (e.key === 'Escape') setHelpOpen(false)
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault()
+        setPaletteOpen(true)
+      }
+      if (e.key === 'Escape') {
+        setHelpOpen(false)
+        setPaletteOpen(false)
+      }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [])
+
+  useEffect(() => {
+    if (!toast) return
+    const tmr = window.setTimeout(() => setToast(null), 2200)
+    return () => window.clearTimeout(tmr)
+  }, [toast])
 
   // Configured-directory discovery (browser: no FS — empty until helper / future FSA).
   // Still wires the discovery module so dirs are stored and scanned when a lister exists.
@@ -233,6 +253,28 @@ export default function App() {
         onUpsert={(col) => patchPersist((s) => upsertCollection(s, col))}
         onRemove={(id) => patchPersist((s) => removeCollection(s, id))}
       />
+      {selectedIds.length > 0 ? (
+        <div className="bulk-bar" role="region" aria-label="Bulk actions">
+          <span>{selectedIds.length} selected</span>
+          <button
+            type="button"
+            className="btn"
+            onClick={() => {
+              patchPersist((s) => {
+                let next = s
+                for (const id of selectedIds) next = toggleFavorite(next, id)
+                return next
+              })
+              setToast('Toggled favorites')
+            }}
+          >
+            Toggle ★
+          </button>
+          <button type="button" className="btn btn-ghost" onClick={() => setSelectedIds([])}>
+            Clear
+          </button>
+        </div>
+      ) : null}
 
       <div className={`tv-bezel main-stage ${selected ? 'has-detail' : ''}`}>
         <section className="library-panel" aria-label="Cartridge library">
@@ -272,7 +314,13 @@ export default function App() {
             <CartridgeGrid
               items={visible}
               selectedId={selected?.id ?? null}
+              selectedIds={selectedIds}
               onSelect={selectId}
+              onToggleSelect={(id) =>
+                setSelectedIds((ids) =>
+                  ids.includes(id) ? ids.filter((x) => x !== id) : [...ids, id],
+                )
+              }
               onToggleFavorite={(id) => patchPersist((s) => toggleFavorite(s, id))}
             />
           )}
@@ -281,6 +329,7 @@ export default function App() {
         <CartridgeDetail
           cartridge={selected}
           playCount={selected ? (persist.playCounts?.[selected.id] ?? 0) : 0}
+          onToast={setToast}
           onClose={() =>
             patchPersist((s) => ({
               ...s,
@@ -325,6 +374,73 @@ export default function App() {
         }}
       />
       <HelpOverlay open={helpOpen} onClose={() => setHelpOpen(false)} />
+      <CommandPalette
+        open={paletteOpen}
+        cartridges={withGit}
+        onClose={() => setPaletteOpen(false)}
+        onSelectCart={(id) => {
+          selectId(id)
+          setToast(`Selected ${id}`)
+        }}
+        actions={[
+          {
+            id: 'play',
+            label: 'Play selected cartridge',
+            run: () => {
+              const cart = withGit.find((c) => c.id === persist.uiPrefs.selectedId)
+              if (!cart) {
+                setToast('Nothing selected')
+                return
+              }
+              const act = resolveLaunchActions(cart).find((a) => a.kind === 'open-url')
+              if (act) {
+                patchPersist((s) => recordOpened(s, cart.id))
+                executeSafeLaunch(act)
+                setToast(`Playing ${cart.title}`)
+              } else {
+                setToast('No https/localhost Play action')
+              }
+            },
+          },
+          {
+            id: 'demo',
+            label: persist.uiPrefs.demoMode ? 'Turn Demo OFF' : 'Turn Demo ON',
+            run: () =>
+              patchPersist((s) => ({
+                ...s,
+                uiPrefs: { ...s.uiPrefs, demoMode: !s.uiPrefs.demoMode },
+              })),
+          },
+          {
+            id: 'register',
+            label: 'Register cartridge',
+            run: () => setRegisterOpen(true),
+          },
+          {
+            id: 'discovery',
+            label: 'Open discovery',
+            run: () => setSettingsOpen(true),
+          },
+          {
+            id: 'rescan',
+            label: 'Rescan discovery (clear import cache)',
+            run: () => {
+              setDiscoveryScan([])
+              setToast('Discovery cache cleared — re-import JSON')
+            },
+          },
+        ]}
+      />
+      <Onboarding
+        open={!persist.uiPrefs.firstRunDone}
+        onDone={() =>
+          patchPersist((s) => ({
+            ...s,
+            uiPrefs: { ...s.uiPrefs, firstRunDone: true, demoMode: false },
+          }))
+        }
+      />
+      <Toast message={toast} />
     </div>
   )
 }

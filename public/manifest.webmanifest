@@ -1,0 +1,16 @@
+{
+  "name": "Weaselworks",
+  "short_name": "Weaselworks",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0d0a12",
+  "theme_color": "#241833",
+  "icons": [
+    {
+      "src": "dexter/stinkweasel-dexter.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

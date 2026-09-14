@@ -5,7 +5,9 @@ import { CartridgeCard } from './CartridgeCard'
 interface Props {
   items: Cartridge[]
   selectedId: string | null
+  selectedIds?: string[]
   onSelect: (id: string) => void
+  onToggleSelect?: (id: string) => void
   onToggleFavorite: (id: string) => void
 }
 
@@ -16,7 +18,7 @@ function columnCount(container: HTMLElement | null): number {
   return Math.max(1, cols)
 }
 
-export function CartridgeGrid({ items, selectedId, onSelect, onToggleFavorite }: Props) {
+export function CartridgeGrid({ items, selectedId, selectedIds = [], onSelect, onToggleSelect, onToggleFavorite }: Props) {
   const listRef = useRef<HTMLUListElement>(null)
   const selectedIndex = Math.max(
     0,
@@ -73,6 +75,8 @@ export function CartridgeGrid({ items, selectedId, onSelect, onToggleFavorite }:
           key={c.id}
           cartridge={c}
           selected={c.id === selectedId}
+          multiSelected={selectedIds.includes(c.id)}
+          onToggleSelect={() => onToggleSelect?.(c.id)}
           onSelect={() => onSelect(c.id)}
           onToggleFavorite={() => onToggleFavorite(c.id)}
           tabIndex={c.id === selectedId || (selectedId === null && i === 0) ? 0 : -1}

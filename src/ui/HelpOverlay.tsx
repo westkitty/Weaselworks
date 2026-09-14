@@ -19,6 +19,8 @@ export function HelpOverlay({ open, onClose }: Props) {
           <li><kbd>↑↓←→</kbd> / <kbd>WASD</kbd> — move grid focus</li>
           <li><kbd>Enter</kbd> / <kbd>Space</kbd> — select cartridge</li>
           <li><kbd>?</kbd> — toggle this help</li>
+          <li><kbd>⌘K</kbd> / <kbd>Ctrl+K</kbd> — command palette</li>
+          <li><kbd>⌘/Ctrl+click</kbd> — multi-select carts</li>
           <li><kbd>Esc</kbd> — close panels</li>
         </ul>
         <div className="form-actions">

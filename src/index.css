@@ -1,4 +1,7 @@
 :root {
+  /* westcat_brandkit-inspired */
+  --brand-westcat: #e8b84a;
+  --brand-ink: #120e1a;
   color-scheme: dark;
   --bg-deep: #0e0a14;
   --bg-panel: #1a1423;

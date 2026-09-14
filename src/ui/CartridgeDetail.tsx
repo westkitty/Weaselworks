@@ -9,9 +9,10 @@ interface Props {
   onToggleFavorite: (id: string) => void
   onMarkOpened: (id: string) => void
   playCount?: number
+  onToast?: (msg: string) => void
 }
 
-export function CartridgeDetail({ cartridge, onClose, onToggleFavorite, onMarkOpened, playCount = 0 }: Props) {
+export function CartridgeDetail({ cartridge, onClose, onToggleFavorite, onMarkOpened, playCount = 0, onToast }: Props) {
   if (!cartridge) {
     return (
       <aside className="detail-panel detail-sheet" aria-label="Cartridge detail">
@@ -43,6 +44,13 @@ export function CartridgeDetail({ cartridge, onClose, onToggleFavorite, onMarkOp
         </div>
       </div>
 
+      {(cartridge.gallery && cartridge.gallery.length > 0) ? (
+        <div className="gallery-strip" aria-label="Gallery">
+          {cartridge.gallery.map((src) => (
+            <img key={src} src={src} alt="" />
+          ))}
+        </div>
+      ) : null}
       <dl className="kv">
         <dt>ID</dt>
         <dd>{cartridge.id}</dd>
@@ -82,6 +90,39 @@ export function CartridgeDetail({ cartridge, onClose, onToggleFavorite, onMarkOp
         </div>
       ) : null}
 
+      
+      {cartridge.manifestIssues && cartridge.manifestIssues.length > 0 ? (
+        <button
+          type="button"
+          className="btn"
+          onClick={async () => {
+            const template = JSON.stringify(
+              {
+                schemaVersion: 1,
+                id: cartridge.id.replace(/^broken:/, 'fixed-'),
+                title: cartridge.title,
+                description: 'Repaired stub — edit me',
+                status: 'DEVELOPMENT',
+                projectType: 'app',
+                launch: { method: 'directory' },
+                platforms: ['web'],
+                tags: ['repaired'],
+              },
+              null,
+              2,
+            )
+            try {
+              await navigator.clipboard.writeText(template)
+              onToast?.('Repair template copied')
+            } catch {
+              onToast?.('Clipboard blocked')
+            }
+          }}
+        >
+          Copy repair template
+        </button>
+      ) : null}
+
       <div className="git-box">
         <strong>Git</strong>
         {git?.available ? (
@@ -117,6 +158,7 @@ export function CartridgeDetail({ cartridge, onClose, onToggleFavorite, onMarkOp
                   onClick={() => {
                     onMarkOpened(cartridge.id)
                     executeSafeLaunch(a)
+                    onToast?.(a.kind === 'open-url' ? `Playing ${cartridge.title}` : 'Ready')
                   }}
                 >
                   {a.label}

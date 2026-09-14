@@ -4,7 +4,9 @@ import { StatusBadge } from './StatusBadge'
 interface Props {
   cartridge: Cartridge
   selected: boolean
+  multiSelected?: boolean
   onSelect: () => void
+  onToggleSelect?: () => void
   onToggleFavorite: () => void
   tabIndex: number
   gridIndex: number
@@ -14,6 +16,8 @@ export function CartridgeCard({
   cartridge,
   selected,
   onSelect,
+  multiSelected,
+  onToggleSelect,
   onToggleFavorite,
   tabIndex,
   gridIndex,
@@ -24,6 +28,7 @@ export function CartridgeCard({
     'cart-plastic',
     selected ? 'is-selected' : '',
     cartridge.favorite ? 'is-favorite' : '',
+    multiSelected ? 'is-multi' : '',
     cartridge.missing ? 'is-missing' : '',
     cartridge.status === 'BROKEN' || (cartridge.manifestIssues?.length ?? 0) > 0 ? 'is-broken' : '',
   ]
@@ -40,7 +45,13 @@ export function CartridgeCard({
         tabIndex={tabIndex}
         data-grid-index={gridIndex}
         data-status={cartridge.status}
-        onClick={onSelect}
+        onClick={(e) => {
+          if (e.metaKey || e.ctrlKey || e.shiftKey) {
+            onToggleSelect?.()
+            return
+          }
+          onSelect()
+        }}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault()
