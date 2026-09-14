@@ -15,7 +15,7 @@ export type CartridgeStatus = (typeof CARTRIDGE_STATUSES)[number]
 export const PROJECT_TYPES = ['game', 'app', 'experiment', 'utility'] as const
 export type ProjectType = (typeof PROJECT_TYPES)[number]
 
-export const LAUNCH_METHODS = ['localhost', 'html', 'directory', 'script'] as const
+export const LAUNCH_METHODS = ['localhost', 'html', 'directory', 'script', 'url'] as const
 export type LaunchMethod = (typeof LAUNCH_METHODS)[number]
 
 /** Whitelisted script ids only — never arbitrary shell. */
@@ -24,7 +24,7 @@ export type SafeScriptId = (typeof SAFE_SCRIPT_IDS)[number]
 
 export interface LaunchSpec {
   method: LaunchMethod
-  /** http(s) localhost URL when method === 'localhost' */
+  /** http(s) localhost URL when method === 'localhost'; https URL when method === 'url' */
   url?: string
   /** Relative HTML path when method === 'html' */
   htmlPath?: string

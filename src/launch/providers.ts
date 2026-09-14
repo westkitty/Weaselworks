@@ -25,6 +25,15 @@ const SCRIPT_INSTRUCTIONS: Record<SafeScriptId, (path?: string) => string> = {
       : 'cd <project> && npm run preview',
 }
 
+function isHttpsUrl(url: string): boolean {
+  try {
+    const u = new URL(url)
+    return u.protocol === 'https:'
+  } catch {
+    return false
+  }
+}
+
 function isLocalhostUrl(url: string): boolean {
   try {
     const u = new URL(url)
@@ -69,6 +78,25 @@ export function resolveLaunchActions(cart: Cartridge): LaunchAction[] {
           kind: 'info',
           label: 'Invalid localhost URL',
           instruction: 'Manifest localhost URL is missing or not localhost/127.0.0.1.',
+          safe: true,
+        })
+      }
+      break
+    }
+    case 'url': {
+      if (launch.url && isHttpsUrl(launch.url)) {
+        actions.push({
+          kind: 'open-url',
+          label: 'Open Pages / HTTPS',
+          url: launch.url,
+          instruction: `Open in browser: ${launch.url}`,
+          safe: true,
+        })
+      } else {
+        actions.push({
+          kind: 'info',
+          label: 'Invalid HTTPS URL',
+          instruction: 'Manifest url launch requires a valid https:// URL.',
           safe: true,
         })
       }
@@ -129,7 +157,7 @@ export function resolveLaunchActions(cart: Cartridge): LaunchAction[] {
 }
 
 export function executeSafeLaunch(action: LaunchAction): { opened: boolean; message: string } {
-  if (action.kind === 'open-url' && action.url && isLocalhostUrl(action.url)) {
+  if (action.kind === 'open-url' && action.url && (isLocalhostUrl(action.url) || isHttpsUrl(action.url))) {
     window.open(action.url, '_blank', 'noopener,noreferrer')
     return { opened: true, message: `Opened ${action.url}` }
   }

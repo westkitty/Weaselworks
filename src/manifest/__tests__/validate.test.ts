@@ -95,3 +95,23 @@ describe('duplicate IDs', () => {
     expect(resolved.map((r) => r.id)).toEqual(['x', 'x#2', 'y'])
   })
 })
+
+it('accepts https url launch', () => {
+  const r = validateManifest({
+    schemaVersion: 1,
+    id: 'pages-game',
+    title: 'Pages Game',
+    launch: { method: 'url', url: 'https://westkitty.github.io/2d_Game_Factory/qa-image-game/' },
+  })
+  expect(r.ok).toBe(true)
+})
+
+it('rejects http for url launch', () => {
+  const r = validateManifest({
+    schemaVersion: 1,
+    id: 'bad-pages',
+    title: 'Bad',
+    launch: { method: 'url', url: 'http://example.com/game/' },
+  })
+  expect(r.ok).toBe(false)
+})

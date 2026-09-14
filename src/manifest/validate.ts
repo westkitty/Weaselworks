@@ -12,6 +12,15 @@ function isPlainObject(v: unknown): v is Record<string, unknown> {
   return typeof v === 'object' && v !== null && !Array.isArray(v)
 }
 
+function isHttpsUrl(url: string): boolean {
+  try {
+    const u = new URL(url)
+    return u.protocol === 'https:'
+  } catch {
+    return false
+  }
+}
+
 function isLocalhostUrl(url: string): boolean {
   try {
     const u = new URL(url)
@@ -112,7 +121,7 @@ export function validateManifest(raw: unknown): ValidationResult {
     } else {
       const method = raw.launch.method
       if (method !== undefined && !isLaunchMethod(method)) {
-        errors.push('launch.method must be one of: localhost | html | directory | script')
+        errors.push('launch.method must be one of: localhost | html | directory | script | url')
       }
 
       // Reject dangerous keys that look like arbitrary shell
@@ -136,6 +145,13 @@ export function validateManifest(raw: unknown): ValidationResult {
         } else if (htmlPath.includes('..') || htmlPath.startsWith('/')) {
           // relative only — avoid path traversal hints in manifest
           warnings.push('htmlPath should be a relative path within the project')
+        }
+      }
+
+      if (method === 'url') {
+        const url = raw.launch.url
+        if (typeof url !== 'string' || !isHttpsUrl(url)) {
+          errors.push('launch.url must be an https URL for url launch')
         }
       }
 

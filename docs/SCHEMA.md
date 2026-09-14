@@ -54,6 +54,7 @@ Manifests describe a cartridge (local app/game/experiment/utility) for the Wease
 | `localhost` | `url` must be `http(s)://localhost`, `127.0.0.1`, or `::1` | `window.open` + copyable instruction |
 | `html` | `htmlPath` or `path` (relative HTML) | Copyable `file://` / open instruction |
 | `directory` | (none) | Copyable `open "<path>"` / `cd` instruction |
+| `url` | `url` must be `https://` only | `window.open` + copyable (GitHub Pages) |
 | `script` | `scriptId` ∈ `npm-dev` \| `npm-start` \| `npm-preview` only | Copyable fixed npm command — **never** arbitrary shell |
 
 ### Forbidden

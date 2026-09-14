@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 import { loadDemoLibrary } from './demo/provider'
 import { discoverManifests } from './discovery/discover'
+import { type ManifestCandidate } from './discovery/host'
 import { collectTags, emptyFilters, filterCartridges, type LibraryFilters } from './lib/filter'
 import { mergeLibrary, normalizeDiscovery, normalizeManual } from './normalize/normalize'
 import {
@@ -28,6 +29,7 @@ export default function App() {
   const [discovered, setDiscovered] = useState<Cartridge[]>([])
   const [registerOpen, setRegisterOpen] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [discoveryScan, setDiscoveryScan] = useState<ManifestCandidate[]>([])
 
   useEffect(() => {
     savePersistence(persist)
@@ -44,10 +46,15 @@ export default function App() {
     ;(async () => {
       const results = await discoverManifests({
         configuredDirs: persist.discoveryDirs,
-        listManifestCandidates: async () => {
-          // Pure SPA: filesystem listing requires user tooling / File System Access.
-          // Keep library useful via manual registration + demo.
-          return []
+        listManifestCandidates: async (configuredDir) => {
+          // Prefer imported Node/FSA scan results matching this configured dir.
+          const matches = discoveryScan.filter(
+            (c) =>
+              c.projectPath === configuredDir ||
+              c.manifestPath.startsWith(configuredDir.replace(/\/+$/, '') + '/') ||
+              c.projectPath.startsWith(configuredDir.replace(/\/+$/, '') + '/'),
+          )
+          return matches
         },
       })
       if (cancelled) return
@@ -56,7 +63,7 @@ export default function App() {
     return () => {
       cancelled = true
     }
-  }, [persist.discoveryDirs, persist.uiPrefs.demoMode])
+  }, [persist.discoveryDirs, persist.uiPrefs.demoMode, discoveryScan])
 
   const demo = useMemo(() => loadDemoLibrary(), [])
   const manual = useMemo(
@@ -264,6 +271,13 @@ export default function App() {
             gitSnapshots: { ...s.gitSnapshots, [path]: meta },
           }))
         }
+        onImportScan={(candidates) => {
+          setDiscoveryScan(candidates)
+          patchPersist((s) => ({
+            ...s,
+            uiPrefs: { ...s.uiPrefs, demoMode: false },
+          }))
+        }}
       />
     </div>
   )
