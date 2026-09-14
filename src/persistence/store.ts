@@ -12,7 +12,7 @@ const defaultUiPrefs: UiPrefs = {
 export function defaultPersistenceState(): PersistenceState {
   return {
     schemaVersion: PERSISTENCE_SCHEMA_VERSION,
-    discoveryDirs: ['/Users/andrew/2d_game_factory/2d_Game_Factory/games'],
+    discoveryDirs: ['/Users/andrew/2d_game_factory/2d_Game_Factory/games', '/Users/andrew/2d_game_factory/2d_Game_Factory/demos', '/Users/andrew/Deeper'],
     manualRegistrations: [],
     favorites: [],
     recentlyOpened: [],

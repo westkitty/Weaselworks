@@ -87,7 +87,7 @@ export function resolveLaunchActions(cart: Cartridge): LaunchAction[] {
       if (launch.url && isHttpsUrl(launch.url)) {
         actions.push({
           kind: 'open-url',
-          label: 'Open Pages / HTTPS',
+          label: 'Play',
           url: launch.url,
           instruction: `Open in browser: ${launch.url}`,
           safe: true,

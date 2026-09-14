@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 import { loadDemoLibrary } from './demo/provider'
+import { loadFleetPagesLibrary } from './catalog/fleetPages'
 import { discoverManifests } from './discovery/discover'
 import { type ManifestCandidate } from './discovery/host'
 import { collectTags, emptyFilters, filterCartridges, type LibraryFilters } from './lib/filter'
@@ -66,6 +67,7 @@ export default function App() {
   }, [persist.discoveryDirs, persist.uiPrefs.demoMode, discoveryScan])
 
   const demo = useMemo(() => loadDemoLibrary(), [])
+  const fleet = useMemo(() => loadFleetPagesLibrary(), [])
   const manual = useMemo(
     () => persist.manualRegistrations.map(normalizeManual),
     [persist.manualRegistrations],
@@ -76,12 +78,13 @@ export default function App() {
       demo,
       manual,
       discovered,
+      fleet,
       favorites: persist.favorites,
       recentlyOpened: persist.recentlyOpened,
       demoMode: persist.uiPrefs.demoMode,
     })
     return merged
-  }, [demo, manual, discovered, persist.favorites, persist.recentlyOpened, persist.uiPrefs.demoMode])
+  }, [demo, fleet, manual, discovered, persist.favorites, persist.recentlyOpened, persist.uiPrefs.demoMode])
 
   const withGit = useMemo(() => {
     if (persist.uiPrefs.demoMode) {

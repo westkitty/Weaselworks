@@ -33,7 +33,7 @@ function asProjectType(v: string | undefined): ProjectType {
 function normalizeLaunch(doc: ManifestDocument): LaunchSpec {
   const method = (doc.launch?.method ?? 'directory') as LaunchSpec['method']
   const spec: LaunchSpec = { method }
-  if (method === 'localhost' && doc.launch?.url) spec.url = doc.launch.url
+  if ((method === 'localhost' || method === 'url') && doc.launch?.url) spec.url = doc.launch.url
   if (method === 'html') {
     spec.htmlPath = doc.launch?.htmlPath ?? doc.launch?.path
   }
@@ -122,6 +122,7 @@ export function mergeLibrary(opts: {
   demo: Cartridge[]
   manual: Cartridge[]
   discovered: Cartridge[]
+  fleet?: Cartridge[]
   favorites: string[]
   recentlyOpened: { id: string; openedAt: string }[]
   demoMode: boolean
@@ -133,7 +134,7 @@ export function mergeLibrary(opts: {
   if (opts.demoMode) {
     items = [...opts.demo]
   } else {
-    items = [...opts.manual, ...opts.discovered]
+    items = [...(opts.fleet ?? []), ...opts.manual, ...opts.discovered]
   }
 
   // Explicit duplicate handling
