@@ -19,6 +19,7 @@ export function defaultPersistenceState(): PersistenceState {
     uiPrefs: { ...defaultUiPrefs },
     gitSnapshots: {},
     playCounts: {},
+    collections: [],
   }
 }
 
@@ -96,4 +97,16 @@ export function addDiscoveryDir(state: PersistenceState, dir: string): Persisten
 
 export function removeDiscoveryDir(state: PersistenceState, dir: string): PersistenceState {
   return { ...state, discoveryDirs: state.discoveryDirs.filter((d) => d !== dir) }
+}
+
+export function upsertCollection(
+  state: PersistenceState,
+  col: { id: string; name: string; tag: string },
+): PersistenceState {
+  const rest = state.collections.filter((c) => c.id !== col.id)
+  return { ...state, collections: [...rest, col] }
+}
+
+export function removeCollection(state: PersistenceState, id: string): PersistenceState {
+  return { ...state, collections: state.collections.filter((c) => c.id !== id) }
 }

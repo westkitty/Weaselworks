@@ -694,3 +694,47 @@ kbd {
     transform: none !important;
   }
 }
+
+/* A8 tablet sheet + collections */
+.collections-panel {
+  display: grid;
+  gap: 0.4rem;
+}
+.collection-add {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+.collection-add input {
+  min-height: 44px;
+  flex: 1 1 120px;
+  background: #120e1a;
+  border: 1px solid #4a3c60;
+  border-radius: 8px;
+  color: inherit;
+  padding: 0.35rem 0.55rem;
+}
+.chip-x {
+  margin-left: 0.35rem;
+  opacity: 0.75;
+}
+@media (min-width: 768px) and (max-width: 1100px) {
+  .app-shell {
+    max-width: 100%;
+    padding: 0.5rem 0.75rem 1.5rem;
+  }
+  .tv-bezel {
+    border-width: 14px;
+    border-radius: 28px;
+    padding: 1rem;
+  }
+  .main-stage {
+    grid-template-columns: 1.1fr 0.9fr;
+  }
+  .cart-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+  .detail-panel {
+    max-height: calc(100vh - 220px);
+  }
+}

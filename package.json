@@ -10,7 +10,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:pages": "WW_PAGES_BASE=/Weaselworks/ tsc -b && WW_PAGES_BASE=/Weaselworks/ vite build",
+    "preview:pages": "WW_PAGES_BASE=/Weaselworks/ vite preview"
   },
   "dependencies": {
     "react": "^19.2.8",

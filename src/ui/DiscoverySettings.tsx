@@ -89,6 +89,22 @@ export function DiscoverySettingsModal({
           <code>node scripts/discover-manifests.mjs &lt;dir&gt;</code> (recommended on Mac), or pick a
           folder in Chromium via File System Access.
         </p>
+        <button
+          type="button"
+          className="btn"
+          onClick={async () => {
+            const cmd =
+              'node ~/Developer/Weaselworks/scripts/discover-manifests.mjs /Users/andrew/2d_game_factory/2d_Game_Factory/games'
+            try {
+              await navigator.clipboard.writeText(cmd)
+              setMsg('Discover command copied')
+            } catch {
+              setMsg(cmd)
+            }
+          }}
+        >
+          Copy discover command
+        </button>
         <div className="form-grid">
           <label>
             Paste discovery JSON

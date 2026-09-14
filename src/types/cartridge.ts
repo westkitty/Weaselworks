@@ -122,6 +122,13 @@ export interface UiPrefs {
   selectedId: string | null
 }
 
+export interface CollectionDef {
+  id: string
+  name: string
+  /** Tag that membership uses (cartridges with this tag) */
+  tag: string
+}
+
 export interface PersistenceState {
   schemaVersion: number
   discoveryDirs: string[]
@@ -133,4 +140,5 @@ export interface PersistenceState {
   gitSnapshots: Record<string, GitMetadata>
   /** Open/play counts keyed by cartridge id */
   playCounts: Record<string, number>
+  collections: CollectionDef[]
 }

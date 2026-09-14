@@ -10,9 +10,11 @@ import {
   addDiscoveryDir,
   loadPersistence,
   recordOpened,
+  removeCollection,
   removeDiscoveryDir,
   savePersistence,
   toggleFavorite,
+  upsertCollection,
 } from './persistence/store'
 import type { Cartridge, GitMetadata, ManualRegistration, PersistenceState } from './types/cartridge'
 import { CartridgeDetail } from './ui/CartridgeDetail'
@@ -22,6 +24,7 @@ import { DiscoverySettingsModal } from './ui/DiscoverySettings'
 import { FilterBar } from './ui/FilterBar'
 import { RecentRail } from './ui/RecentRail'
 import { HelpOverlay } from './ui/HelpOverlay'
+import { CollectionsPanel } from './ui/CollectionsPanel'
 import { ManualRegisterModal } from './ui/ManualRegister'
 
 const DEXTER = '/dexter/stinkweasel-dexter.png'
@@ -34,6 +37,7 @@ export default function App() {
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [discoveryScan, setDiscoveryScan] = useState<ManifestCandidate[]>([])
   const [helpOpen, setHelpOpen] = useState(false)
+  const [collectionTag, setCollectionTag] = useState<string | null>(null)
 
   useEffect(() => {
     savePersistence(persist)
@@ -218,6 +222,17 @@ export default function App() {
 
       <FilterBar filters={filters} allTags={allTags} onChange={setFilters} />
       <RecentRail items={recentItems} onSelect={selectId} />
+      <CollectionsPanel
+        collections={persist.collections ?? []}
+        activeTag={collectionTag}
+        onSelectTag={(tag) => {
+          setCollectionTag(tag)
+          if (tag) setFilters((f) => ({ ...f, tags: [tag] }))
+          else setFilters((f) => ({ ...f, tags: [] }))
+        }}
+        onUpsert={(col) => patchPersist((s) => upsertCollection(s, col))}
+        onRemove={(id) => patchPersist((s) => removeCollection(s, id))}
+      />
 
       <div className={`tv-bezel main-stage ${selected ? 'has-detail' : ''}`}>
         <section className="library-panel" aria-label="Cartridge library">
