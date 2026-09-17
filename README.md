@@ -54,6 +54,22 @@ See [docs/SCHEMA.md](docs/SCHEMA.md) for `weaselworks.json` schema, validation r
 | `src/ui/` | Library UI |
 | `scripts/git-inspect.mjs` | Optional Node Git helper |
 
+
+## Arcade vs Make backend
+
+Weaselworks is an **arcade shell**: it catalogs and safely launches cartridges (Play URLs, localhost, whitelisted npm scripts). It does **not** embed a game engine.
+
+**Make** is a swappable backend for creating/remixing/packing games:
+
+| Backend | Role today | Launch from arcade |
+|---------|------------|--------------------|
+| **2D Game Factory** workbench | Create / Remix / Pack 2D Phaser games; publish packs to `westkitty.github.io/2d_Game_Factory/<id>/` | TOOL cart `factory-workbench` + header **Make** button → `npm run app` / `npm run app:dev` in `/Users/andrew/2d_game_factory/2d_Game_Factory` |
+| **3D factory** (later) | Same arcade contract; different make-backend | Swap TOOL cart / Make target without changing the arcade shell |
+
+After a successful factory pack + Pages publish, new playables should appear as Weaselworks carts via `src/catalog/fleetPages.ts` seed and/or discovery of `weaselworks.json` under configured factory dirs (`games/`, `demos/`, `proofs/`).
+
+**Deeper / Flit\*** fleet entries stay `legacy-pages` — not factory products.
+
 ## Security
 
 - No arbitrary shell from manifests  

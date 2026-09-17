@@ -228,6 +228,18 @@ export default function App() {
           >
             List
           </button>
+          <button
+            type="button"
+            className="btn btn-primary"
+            title="Open 2D Game Factory workbench (Create / Remix / Pack)"
+            onClick={() => {
+              selectId('factory-workbench')
+              setFilters((f) => ({ ...f, statuses: ['TOOL'], tags: ['make'] }))
+              setToast('Make: 2D Factory workbench — copy npm run app / npm run app:dev')
+            }}
+          >
+            Make
+          </button>
           <button type="button" className="btn btn-primary" onClick={() => setRegisterOpen(true)}>
             Register
           </button>
