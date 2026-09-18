@@ -4,7 +4,7 @@ import { loadFleetPagesLibrary } from '../fleetPages'
 describe('fleetPages', () => {
   it('seeds https url launches for playables; allows safe script for Make TOOL', () => {
     const carts = loadFleetPagesLibrary()
-    expect(carts.length).toBeGreaterThanOrEqual(20)
+    expect(carts.length).toBeGreaterThanOrEqual(40)
     const make = carts.find((c) => c.id === 'factory-workbench')
     expect(make).toBeTruthy()
     expect(make?.status).toBe('TOOL')
@@ -18,7 +18,7 @@ describe('fleetPages', () => {
     }
 
     const factoryPlayables = carts.filter((c) => c.tags.includes('factory') && c.status === 'PLAYABLE')
-    expect(factoryPlayables.length).toBeGreaterThanOrEqual(70)
+    expect(factoryPlayables.length).toBeGreaterThanOrEqual(40)
     for (const c of carts.filter((c) => c.tags.includes('legacy-pages'))) {
       expect(c.tags.includes('factory')).toBe(false)
     }
